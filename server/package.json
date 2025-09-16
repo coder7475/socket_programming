@@ -1,10 +1,10 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "Learn Socket Programming",
   "scripts": {
-    "dev": "node server.js"
+    "tcp": "node server.js",
+    "udp": "node udpServer.js"
   },
   "keywords": [],
   "author": "",

@@ -2,9 +2,9 @@
   "name": "client",
   "version": "1.0.0",
   "description": "",
-  "main": "client.js",
   "scripts": {
-    "dev": "node client.js"
+    "tcp": "node client.js",
+    "udp": "node udpClient.js"
   },
   "keywords": [],
   "author": "",
