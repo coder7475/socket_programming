@@ -4,10 +4,14 @@
   "description": "",
   "scripts": {
     "tcp": "node client.js",
-    "udp": "node udpClient.js"
+    "udp": "node udpClient.js",
+    "ws": "node wsClient.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.12.1"
+  "packageManager": "pnpm@10.12.1",
+  "dependencies": {
+    "ws": "^8.18.3"
+  }
 }

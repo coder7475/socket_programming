@@ -4,10 +4,14 @@
   "description": "Learn Socket Programming",
   "scripts": {
     "tcp": "node server.js",
-    "udp": "node udpServer.js"
+    "udp": "node udpServer.js",
+    "ws": "node wsServer.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.12.1"
+  "packageManager": "pnpm@10.12.1",
+  "dependencies": {
+    "ws": "^8.18.3"
+  }
 }
