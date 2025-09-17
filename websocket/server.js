@@ -5,7 +5,7 @@ const wsServer = new WebSocket.Server({ port: 8080 });
 console.log("Web Socket Server running on http://localhost:8080");
 
 wsServer.on("connection", (ws) => {
-  console.log("New Client Connected!");
+  console.log(`[${new Date().toISOString()}] New Client Connected!`);
 
   ws.send("Welcome to WebSocket Server!");
 

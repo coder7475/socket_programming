@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Websocket Demo",
   "scripts": {
-    "server": "node server.js"
+    "server": "node server.js",
+    "client": "node client.js"
   },
   "keywords": [],
   "author": "",
