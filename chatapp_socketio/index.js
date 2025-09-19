@@ -13,17 +13,17 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-io.on("connection", () => {
+io.on("connection", (socket) => {
   console.log("A user is connected");
 
-  io.on("chat message", (message) => {
+  socket.on("chat message", (message) => {
     console.log(`Message Received: ${message}!`);
 
     // Broadcast to all clients
-    io.emit("chat message", message);
+    socket.emit("chat message", message);
   });
 
-  io.on("disconnection", () => {
+  socket.on("disconnection", () => {
     console.log("A user is disconnected!");
   });
 });

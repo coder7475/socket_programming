@@ -4,8 +4,136 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat APP</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f7f7fa;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      h1 {
+        color: #333;
+        margin-top: 40px;
+        margin-bottom: 20px;
+        font-size: 2rem;
+        letter-spacing: 1px;
+      }
+      #messages {
+        list-style: none;
+        padding: 0 0 0 0;
+        margin: 0 0 20px 0;
+        width: 100%;
+        max-width: 500px;
+        min-height: 300px;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        overflow-y: auto;
+      }
+      #messages li {
+        padding: 10px 16px;
+        border-bottom: 1px solid #f0f0f0;
+        color: #222;
+        word-break: break-word;
+        font-size: 1rem;
+        transition: background 0.2s;
+      }
+      #messages li:last-child {
+        border-bottom: none;
+      }
+      #form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 500px;
+        margin-bottom: 40px;
+        gap: 8px;
+      }
+      #input {
+        flex: 1;
+        padding: 10px 14px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1rem;
+        outline: none;
+        transition: border 0.2s;
+        background: #fafbfc;
+      }
+      #input:focus {
+        border-color: #7b61ff;
+        background: #fff;
+      }
+      button {
+        padding: 10px 22px;
+        background: #7b61ff;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: 0 1px 4px rgba(123, 97, 255, 0.08);
+      }
+      button:hover,
+      button:focus {
+        background: #5a43c2;
+      }
+      @media (max-width: 600px) {
+        #messages,
+        #form {
+          max-width: 95vw;
+        }
+      }
+    </style>
   </head>
   <body>
-    Welcome to Socket Io chat APP
+    <h1>Welcome to Socket Io chat APP</h1>
+
+    <ul id="messages"></ul>
+
+    <form action="#" id="form">
+      <input
+        type="text"
+        id="input"
+        autocomplete="off"
+        placeholder="Type your message"
+      />
+      <button>Send</button>
+    </form>
+    <!-- Logic -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      // Connect to the Socket.IO server
+      const socket = io();
+
+      // Get DOM elements
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
+      const messages = document.getElementById("messages");
+
+      // Handle form submission
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const message = input.value.trim();
+        if (message.length > 0) {
+          socket.emit("chat message", message);
+          input.value = "";
+        }
+      });
+
+      // Listen for incoming chat messages
+      socket.on("chat message", (message) => {
+        const item = document.createElement("li");
+        item.textContent = message;
+        messages.appendChild(item);
+        messages.scrollTop = messages.scrollHeight;
+      });
+    </script>
   </body>
 </html>
