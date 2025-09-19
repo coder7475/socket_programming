@@ -1,0 +1,16 @@
+{
+  "name": "chatapp_socketio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.1",
+  "dependencies": {
+    "socket.io": "^4.8.1"
+  }
+}
