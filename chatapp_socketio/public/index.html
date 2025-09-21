@@ -95,6 +95,15 @@
   <body>
     <h1>Welcome to Socket Io chat APP</h1>
 
+    <div id="usrname-container">
+      <input
+        type="text"
+        id="username-input"
+        placeholder="Enter your username"
+      />
+      <button id="set-username-btn">Set Username</button>
+    </div>
+
     <ul id="messages"></ul>
 
     <form action="#" id="form">
@@ -128,11 +137,30 @@
       });
 
       // Listen for incoming chat messages
-      socket.on("chat message", (message) => {
+      socket.on("chat message", (data) => {
         const item = document.createElement("li");
-        item.textContent = message;
+        item.innerHTML = `<strong>${data?.username}:</strong> ${data?.message}`;
         messages.appendChild(item);
         messages.scrollTop = messages.scrollHeight;
+      });
+
+      // username handling
+      const usernameInput = document.getElementById("username-input");
+      const setUsernameBtn = document.getElementById("set-username-btn");
+      let currentUsername = "Anonymous";
+
+      setUsernameBtn.addEventListener("click", () => {
+        const newUserName = usernameInput.value.trim();
+        if (newUserName) {
+          socket.emit("set username", newUserName);
+          currentUsername = newUserName;
+          usernameInput.value = "";
+        }
+      });
+
+      socket.on("user left", (data) => {
+        const item = document.createElement("li");
+        item.textContent = `${data?.user} has left the chat!`;
       });
     </script>
   </body>
