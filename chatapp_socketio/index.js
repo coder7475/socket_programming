@@ -7,6 +7,8 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+const rooms = new Set(["general", "random"]);
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
@@ -14,18 +16,20 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("A user is connected");
-
   socket.username = "Anonymous";
+  console.log(`${socket.username} is connected`);
 
   socket.on("chat message", (message) => {
-    console.log(`Message Received: ${message}!`);
+    console.log(`${socket.username} Sent: ${message}!`);
+    const room =
+      Array.from(socket.rooms).find((r) => r !== socket.id) || "general";
 
     // Broadcast to all clients
-    socket.emit("chat message", {
+    socket.to(room).emit("chat message", {
       username: socket.username,
       message,
       timestamp: new Date().toISOString(),
+      room,
     });
   });
 
@@ -38,8 +42,34 @@ io.on("connection", (socket) => {
     });
   });
 
+  // handle chat rooms
+  socket.on("join room", (room) => {
+    // leave all room excepts sockets own private room represented by it's id
+    socket.rooms.forEach((r) => {
+      if (r !== socket.id) {
+        socket.leave(r);
+        socket.emit("left room", r);
+      }
+    });
+
+    socket.join(room);
+    socket.emit("joined room", room);
+
+    socket.to(room).emit("room message", {
+      username: "System",
+      message: `${socket.username} has joined the room`,
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+  socket.on("create room", (roomName) => {
+    if (!rooms.has(roomName)) {
+      rooms.add(roomName).io.emit("room created", roomName);
+    }
+  });
+
   socket.on("disconnection", () => {
-    console.log("A user is disconnected!");
+    console.log(`${socket.username} is disconnected`);
     io.emit("user left", {
       username: socket.username,
     });
