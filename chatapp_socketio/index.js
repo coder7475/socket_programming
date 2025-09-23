@@ -20,12 +20,11 @@ io.on("connection", (socket) => {
   console.log(`${socket.username} is connected`);
 
   socket.on("chat message", (message) => {
-    console.log(`${socket.username} Sent: ${message}!`);
     const room =
       Array.from(socket.rooms).find((r) => r !== socket.id) || "general";
 
     // Broadcast to all clients
-    socket.to(room).emit("chat message", {
+    io.to(room).emit("chat message", {
       username: socket.username,
       message,
       timestamp: new Date().toISOString(),
