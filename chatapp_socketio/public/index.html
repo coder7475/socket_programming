@@ -239,13 +239,26 @@
         }
       });
 
+      // Handle user join notifications
+      socket.on("user joined", (data) => {
+        const item = document.createElement("li");
+        item.className = "system-message";
+
+        if (data.oldUsername === "Anonymous") {
+          item.textContent = `${data.newUserName} has joined the chat`;
+        } else {
+          item.textContent = `${data.oldUsername} is now known as ${data.newUserName}`;
+        }
+        messages.appendChild(item);
+        messages.scrollTop = messages.scrollHeight;
+      });
+
       socket.on("user left", (data) => {
         const item = document.createElement("li");
         item.className = "system-message";
         item.textContent = `${data.username} has left the chat!`;
       });
 
-      // Room Handling
       // Room handling
       const roomList = document.getElementById("room-list");
       const newRoomInput = document.getElementById("new-room");

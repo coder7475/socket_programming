@@ -36,10 +36,12 @@ io.on("connection", (socket) => {
   socket.on("set username", (username) => {
     const oldUsername = socket.username;
     socket.username = username ?? "Anonymous";
-    io.emit("user joined", {
+    const data = {
       oldUsername,
       newUserName: socket.username,
-    });
+    };
+
+    io.emit("user joined", data);
   });
 
   // handle chat rooms
