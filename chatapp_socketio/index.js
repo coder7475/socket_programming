@@ -19,11 +19,11 @@ io.on("connection", (socket) => {
   socket.username = "Anonymous";
   console.log(`${socket.username} is connected`);
 
+  // handle messages
   socket.on("chat message", (message) => {
     const room =
       Array.from(socket.rooms).find((r) => r !== socket.id) || "general";
 
-    // Broadcast to all clients
     io.to(room).emit("chat message", {
       username: socket.username,
       message,
@@ -32,20 +32,18 @@ io.on("connection", (socket) => {
     });
   });
 
+  // handle username
   socket.on("set username", (username) => {
     const oldUsername = socket.username;
-    socket.username = username ?? "Anonymous";
-    const data = {
+    socket.username = username || "Anonymous";
+    io.emit("user joined", {
       oldUsername,
       newUserName: socket.username,
-    };
-
-    io.emit("user joined", data);
+    });
   });
 
-  // handle chat rooms
+  // handle room join
   socket.on("join room", (room) => {
-    // leave all room excepts sockets own private room represented by it's id
     socket.rooms.forEach((r) => {
       if (r !== socket.id) {
         socket.leave(r);
@@ -63,6 +61,7 @@ io.on("connection", (socket) => {
     });
   });
 
+  // handle room creation
   socket.on("create room", (roomName) => {
     if (!rooms.has(roomName)) {
       rooms.add(roomName);
@@ -70,14 +69,13 @@ io.on("connection", (socket) => {
     }
   });
 
+  // handle disconnect
   socket.on("disconnect", () => {
     console.log(`${socket.username} is disconnected`);
-    io.emit("user left", {
-      username: socket.username,
-    });
+    io.emit("user left", { username: socket.username });
   });
 });
 
 server.listen(3000, () => {
-  console.log("Server is Running at port 3000");
+  console.log("Server is running at port 3000");
 });
