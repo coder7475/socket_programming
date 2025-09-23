@@ -175,18 +175,6 @@
       <button id="set-username-btn">Set Username</button>
     </div>
 
-    <ul id="messages"></ul>
-
-    <form action="#" id="form">
-      <input
-        type="text"
-        id="input"
-        autocomplete="off"
-        placeholder="Type your message"
-      />
-      <button>Send</button>
-    </form>
-
     <div id="chat-container">
       <div id="sidebar">
         <h3>Rooms</h3>
@@ -254,7 +242,7 @@
       socket.on("user left", (data) => {
         const item = document.createElement("li");
         item.className = "system-message";
-        item.textContent = `${data?.user} has left the chat!`;
+        item.textContent = `${data.username} has left the chat!`;
       });
 
       // Room Handling
@@ -279,6 +267,27 @@
         }
       });
 
+      createRoomBtn.addEventListener("click", () => {
+        const newRoomName = newRoomInput.value.trim();
+        if (
+          newRoomName &&
+          !document.querySelector(`[data-room="${newRoomName}"]`)
+        ) {
+          socket.emit("create room", newRoomName);
+          newRoomInput.value = "";
+        }
+      });
+
+      socket.on("room created", (roomName) => {
+        const roomItem = document.createElement("li");
+        roomItem.className = "room";
+        roomItem.dataset.room = roomName;
+        roomItem.textContent = roomName;
+
+        console.log(roomItem);
+        roomList.appendChild(roomItem);
+      });
+
       // Handle room join confirmation
       socket.on("joined room", (room) => {
         const item = document.createElement("li");
@@ -288,6 +297,15 @@
         messages.appendChild(item);
 
         currentRoom = room;
+        messages.scrollTop = messages.scrollHeight;
+      });
+
+      // Handle room messages
+      socket.on("room message", (data) => {
+        const item = document.createElement("li");
+        item.className = "system-message";
+        item.textContent = data.message;
+        messages.appendChild(item);
         messages.scrollTop = messages.scrollHeight;
       });
     </script>

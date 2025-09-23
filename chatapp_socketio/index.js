@@ -64,11 +64,12 @@ io.on("connection", (socket) => {
 
   socket.on("create room", (roomName) => {
     if (!rooms.has(roomName)) {
-      rooms.add(roomName).io.emit("room created", roomName);
+      rooms.add(roomName);
+      io.emit("room created", roomName);
     }
   });
 
-  socket.on("disconnection", () => {
+  socket.on("disconnect", () => {
     console.log(`${socket.username} is disconnected`);
     io.emit("user left", {
       username: socket.username,
